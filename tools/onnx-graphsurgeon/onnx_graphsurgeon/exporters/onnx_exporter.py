@@ -159,6 +159,10 @@ def constant_to_onnx_tensor(tensor: Constant) -> onnx.TensorProto:
         )
         arr = _NUMPY_ARRAY_CONVERTERS[target_dtype](tensor.values)
         tensor_raw_bytes = arr.tobytes()
+    elif source_dtype == onnx.TensorProto.INT4:
+        from onnxruntime.quantization.quant_utils import pack_bytes_to_4bit
+
+        tensor_raw_bytes = bytes(pack_bytes_to_4bit(tensor.values.tobytes()))
     else:
         tensor_raw_bytes = tensor.values.tobytes()
 
